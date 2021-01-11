@@ -5,6 +5,9 @@
 npm install
 ```
 
+```
+about-vuerouter4 https://www.cnblogs.com/qisexin/p/13837660.html
+```
 ### Compiles and hot-reloads for development
 ```
 npm run serve
