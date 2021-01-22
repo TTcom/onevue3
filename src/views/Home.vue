@@ -7,35 +7,44 @@
             <span >Toggle</span>    
         </div>
       </div>
-  <transition name="fadeqa">
-    <p v-if="show" class="toggle">hello{{show}}</p>
-  </transition>
-
+       <HelloWorld :title="title" :ref="halo"></HelloWorld>
   </div>
-  <!-- <div>
-    b:{{b}}
-  </div> -->
+
 </template>
 
 <script lang="ts">
-import { defineComponent,ref } from 'vue';
-import {useRouter} from 'vue-router'
-import sign from './sign.vue'; // @ is an alias to /src
+import { defineComponent,onMounted,ref,Ref,DefineComponent } from 'vue';
+import {useRouter,Router} from 'vue-router'
+import HelloWorld from '@/components/HelloWorld.vue'
 
 export default defineComponent({
   name: 'Home',
   components: {
-    sign,
+    HelloWorld
   },
   setup(){
-    const router = useRouter()
+    const router: Router = useRouter()
      let show = ref<boolean>(true);
+     let title = ref<string>('旺仔牛奶')
+
+     let halo: any = (el:HTMLElement):HTMLElement=>{  //获取dom元素
+          return el
+     }
      let toogle = function (){
       router.push('/about')
      }
+     onMounted(()=>{
+        setTimeout(()=>{
+             title.value="特仑苏牛奶" 
+             console.log(halo)
+             halo.getmsg()
+        },1000)
+     })
      return{
        show,
-       toogle
+       toogle,
+       title,
+       halo
      }
 
   }

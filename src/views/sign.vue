@@ -21,6 +21,7 @@
         </div>
         <div class="signinput">
           <el-button
+            class="loginbtn"
             type="primary"
             :loading="islogining"
             :disabled="islogining"
@@ -37,8 +38,8 @@
 <script  lang="ts">
 import { reactive, toRefs, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-//import { ElMessage } from 'element-plus'
-//import ElMessage from '../base/el-message'
+import {login as Login} from '@/api/login'
+import { ElMessage } from 'element-plus'
 export default {
   setup() {
     const router = useRouter();
@@ -52,7 +53,11 @@ export default {
     let show = ref(true);
     const methods = {
       inputchange() {
-        let user = JSON.parse(localStorage.getItem("vsys_user") || "");
+        let user
+        if(localStorage.getItem("vsys_user")){
+           user = JSON.parse(localStorage.getItem("vsys_user") || '');
+        }
+        
         if (user && user.account == data.username) {
           data.password = user.password;
         }
@@ -67,8 +72,24 @@ export default {
           return;
         }
         data.islogining = true;
-        //let params = { account: this.username, password: this.password }
-        router.push("/vue")
+        // router.push("/home")
+        let params = {
+           username: '',
+           password: '',
+        }
+        Login(params).then((res:any)=>{
+          console.log(res)
+          if(res.success){
+            router.push("/home")
+          }else{
+            ElMessage.error({
+              showClose: true,
+              message: res.message,
+              type: "error"
+            })
+          }
+          data.islogining = false;
+        })
         // Login(params)
         //   .then(res => {
         //     console.log(res)
@@ -96,20 +117,20 @@ export default {
       },
       usertest() {
         if (!data.username) {
-         // ElMessage.error('错了哦，这是一条错误消息');
-          // this.$errorMessage({
-          //   showClose: true,
-          //   message: "用户名不可为空",
-          //   type: "error"
-          // })
+        //  ElMessage.error('错了哦，这是一条错误消息');
+          ElMessage.error({
+            showClose: true,
+            message: "用户名不可为空",
+            type: "error"
+          })
           return false;
         }
         if (!data.password) {
-          // this.$errorMessage({
-          //   showClose: true,
-          //   message: "密码不可为空",
-          //   type: "error"
-          // })
+          ElMessage({
+            showClose: true,
+            message: "密码不可为空",
+            type: "error"
+          })
           return false;
         }
 
@@ -118,10 +139,7 @@ export default {
     };
     onMounted(() => {
       setTimeout(() => {
-        console.log(data);
-        console.log(data.isdata);
         data.isdata = !data.isdata;
-        console.log(data.isdata);
       }, 250);
     });
     return {
@@ -133,6 +151,39 @@ export default {
 </script>
 
 <style lang="scss">
+.loginbtn{
+    position: relative;
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        transition: .3s ease-in-out;
+        
+    }
+    &::before {
+        top: -5px;
+        left: -5px;
+        border-top: 1px solid #409EFF;
+        border-left: 1px solid #409EFF;
+        border-radius:4px 0 0 0;
+    }
+    &::after {
+        right: -5px;
+        bottom: -5px;
+        border-bottom: 1px solid #409EFF;
+        border-right: 1px solid #409EFF;
+        border-radius:0 0 4px 0;
+    }
+    &:hover::before,
+    &:hover::after {
+        width: calc(100% + 9px);
+        height: calc(100% + 9px);
+        border-radius:4px;
+    }
+    
+}
 .sign {
   display: flex;
   width: 100%;

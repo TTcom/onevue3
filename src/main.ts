@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import "./common/css/reset.scss"
 import "./common/css/index.scss"
+import "./mock"
 //import store from './store'
 import "./global.js"
 import About from "./views/About.vue"
